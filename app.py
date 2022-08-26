@@ -1,10 +1,13 @@
 import urllib.request
 from flask import Flask, render_template, request, redirect, url_for, flash, jsonify
+from flask_cors import CORS, cross_origin
 import cv2
 import face_recognition
 import os
 
 app = Flask(__name__)
+cors = CORS(app)
+app.config['CORS_HEADERS'] = 'Content-Type'
 
 def saveImages(user_url, aadhar_url):
     urllib.request.urlretrieve(user_url, "./static/Images/userimage.jpg")
@@ -22,6 +25,8 @@ def index():
         body = request.json
         user_url = body['userurl']
         aadhar_url = body['aadharurl']
+        print("user_url: ", user_url)
+        print("aadhar_url: ", aadhar_url)
 
         # userImgURL = request.form.get('userImg')
         #user_url = "https://m.economictimes.com/thumb/msid-73295898,width-1200,height-900,resizemode-4,imgsize-187943/dhoni.jpg"
@@ -55,9 +60,9 @@ def index():
         os.remove("./static/Images/aadharimage.jpg")
 
         if hasil[0] == True:
-            return jsonify({"mached": True}), 200
+            return jsonify({"matched": True}), 200
         else:
-            return jsonify({"mached": False}), 200   
+            return jsonify({"matched": False}), 200   
 
 
 if __name__ == '__main__':
